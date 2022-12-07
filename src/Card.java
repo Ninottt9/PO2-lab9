@@ -58,4 +58,12 @@ public class Card {
     public int hashCode() {
         return Objects.hash(getSuit(), getRank());
     }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "suit=" + suit +
+                ", rank=" + rank +
+                '}';
+    }
 }

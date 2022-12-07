@@ -7,6 +7,8 @@ public class Blackjack {
     private int ai_score;
     private final Deck deck;
 
+    private Boolean quit = false;
+
     public static class Builder{
         private final String player_name;
         private int max_iteration_count = 100;
@@ -49,7 +51,19 @@ public class Blackjack {
         deck = builder.deck;
     }
 
-    void play(){
+    public Deck getDeck()
+    {
+        return deck;
+    }
+
+    private void printScore()
+    {
+        System.out.println(player_name + " score: " + player_score);
+        System.out.println("ai score: " + ai_score);
+    }
+
+
+    private void play(){
         Card player_card = deck.randomCard();
         deck.deleteCard(player_card);
 
@@ -58,14 +72,61 @@ public class Blackjack {
 
         player_score += player_card.getRank().getWeight();
         ai_score += ai_card.getRank().getWeight();
-    }
-    void stop(){
 
+       printScore();
+
+        if(checkScore())
+        {
+            end();
+        }
+    }
+
+    private Boolean checkScore()
+    {
+        if(player_score == 21 || ai_score > 21)
+        {
+            System.out.println("Congratulation! You Won!");
+            return true;
+        }
+        else if(player_score > 21 || ai_score == 21)
+        {
+            System.out.println("You lost! Ha Ha Ha!");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+    private void stop(){
+        printScore();
+        if(player_score > ai_score)
+        {
+            System.out.println("You are currently closer to 21, so you won. Congrats!");
+        }
+        else if(ai_score > player_score)
+        {
+            System.out.println("AI is currently closer to 21, so you lost. HA HA HA!");
+        }
+        else
+        {
+            System.out.println("DRAW");
+        }
+
+        System.out.println();
+
+        end();
+    }
+
+    private void end()
+    {
+        System.out.println("Thanks for playing!");
+        quit = true;
     }
 
     void readInput()
     {
-        Boolean quit = false;
         for(int i = 0; i < max_iteration_count && !quit; i++ )
         {
             System.out.println("Please choose the game option: 'p' to PLAY, 's' to STOP, 'q' to QUIT");
@@ -74,12 +135,9 @@ public class Blackjack {
             {
                 case "p" : play(); break;
                 case "s" : stop(); break;
-                case "q" : quit = true; break;
+                case "q" : end(); break;
                 default: System.out.println("Wrong input"); break;
             }
-
-            System.out.println(player_name + " score: " + player_score);
-            System.out.println("ai + score: " + ai_score);
         }
     }
 }
